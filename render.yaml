@@ -3,7 +3,7 @@ services:
     name: shipex-tracking
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: bash start.sh
+    startCommand: bash deploy.sh
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.16
@@ -16,7 +16,11 @@ services:
       - key: RENDER
         value: true
       - key: APP_URL
-        value: https://shipex-tracking.onrender.com  # IMPORTANT: Replace with your actual Render URL!
+        value: https://shipex22.onrender.com  # IMPORTANT: Replace with your actual Render URL!
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: GUNICORN_CMD_ARGS
+        value: "--bind=0.0.0.0:10000 --workers=2 --timeout=120"  # Explicit gunicorn arguments
     disk:
       name: data
       mountPath: /opt/render/project/src/data

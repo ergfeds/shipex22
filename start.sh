@@ -21,5 +21,11 @@ else
     python -c "from app import create_tables; create_tables()"
 fi
 
+# Set Python path to include current directory
+export PYTHONPATH="${PYTHONPATH}:/opt/render/project/src"
+
+# Print what we're about to run for debugging
+echo "Starting Gunicorn with command: gunicorn app:app --config gunicorn_config.py"
+
 # Start the application
 gunicorn app:app --config gunicorn_config.py 
