@@ -1,0 +1,113 @@
+<footer class="global-footer">
+    <div class="footer-content">
+        <div class="footer-section company-info">
+            <h3 class="footer-logo">{{ settings.site_name|default('ShipEx') }}</h3>
+            <p class="company-description">
+                {% if contents.footer and contents.footer.content %}
+                    {{ contents.footer.content.company_description }}
+                {% else %}
+                    Your trusted partner in global shipping and logistics.
+                {% endif %}
+            </p>
+            <div class="social-links">
+                {% if settings.social_facebook %}
+                    <a href="{{ settings.social_facebook }}" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                {% endif %}
+                {% if settings.social_twitter %}
+                    <a href="{{ settings.social_twitter }}" target="_blank" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                {% endif %}
+                {% if settings.social_linkedin %}
+                    <a href="{{ settings.social_linkedin }}" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                {% endif %}
+                {% if settings.social_instagram %}
+                    <a href="{{ settings.social_instagram }}" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer-section quick-links">
+            <h4>Quick Links</h4>
+            <ul>
+                {% if contents.footer and contents.footer.content and contents.footer.content.quick_links %}
+                    {% for link in contents.footer.content.quick_links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('services') }}">Services</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="footer-section services">
+            <h4>Our Services</h4>
+            <ul>
+                {% if contents.footer and contents.footer.content and contents.footer.content.services %}
+                    {% for service in contents.footer.content.services %}
+                        <li><a href="{{ service.url }}">{{ service.title }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li><a href="{{ url_for('services') }}">Global Shipping</a></li>
+                    <li><a href="{{ url_for('services') }}">Express Delivery</a></li>
+                    <li><a href="{{ url_for('services') }}">Freight Services</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="footer-section contact">
+            <h4>Contact Us</h4>
+            <ul class="contact-info">
+                {% if settings.contact_phone %}
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>{{ settings.contact_phone }}</span>
+                    </li>
+                {% endif %}
+                {% if settings.contact_email %}
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ settings.contact_email }}</span>
+                    </li>
+                {% endif %}
+                {% if contents.footer and contents.footer.content and contents.footer.content.contact_info %}
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ contents.footer.content.contact_info.address|replace('\n', '<br>')|safe }}</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-content">
+            <p class="copyright">
+                {% if contents.footer and contents.footer.content and contents.footer.content.copyright %}
+                    {{ contents.footer.content.copyright }}
+                {% else %}
+                    © {{ now.year }} {{ settings.site_name|default('ShipEx') }}. All rights reserved.
+                {% endif %}
+            </p>
+            <div class="legal-links">
+                {% if contents.footer and contents.footer.content and contents.footer.content.legal_links %}
+                    {% for link in contents.footer.content.legal_links %}
+                        <a href="{{ link.url }}">{{ link.title }}</a>
+                    {% endfor %}
+                {% else %}
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</footer> 

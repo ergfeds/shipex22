@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Shipment - ShipEx Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                border-radius: 0;
+                margin: -1rem;
+                box-shadow: none;
+            }
+            
+            .form-label {
+                margin-bottom: 0.25rem;
+            }
+            
+            .mb-3 {
+                margin-bottom: 1rem !important;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            
+            .d-md-flex {
+                flex-direction: column-reverse;
+            }
+            
+            .me-md-2 {
+                margin-right: 0 !important;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem !important;
+            }
+        }
+
+        .section-title {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title h4 {
+            color: #333;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(82, 45, 145, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('admin') }}">ShipEx Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('new_shipment') }}">New Shipment</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Create New Shipment</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <!-- Tracking Information -->
+                    <div class="section-title mb-3">
+                        <h4>Tracking Information</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="alert alert-info">
+                                <small>A unique tracking number will be generated automatically when the shipment is created.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                {% for status in statuses %}
+                                <option value="{{ status }}">{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sender Information -->
+                    <div class="section-title mb-3 mt-4">
+                        <h4>Sender Information</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="sender_name" class="form-label">Sender Name</label>
+                            <input type="text" class="form-control" id="sender_name" name="sender_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sender_email" class="form-label">Sender Email</label>
+                            <input type="email" class="form-control" id="sender_email" name="sender_email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sender_phone" class="form-label">Sender Phone</label>
+                            <input type="tel" class="form-control" id="sender_phone" name="sender_phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sender_company" class="form-label">Sender Company (Optional)</label>
+                            <input type="text" class="form-control" id="sender_company" name="sender_company">
+                        </div>
+                    </div>
+
+                    <!-- Receiver Information -->
+                    <div class="section-title mb-3 mt-4">
+                        <h4>Receiver Information</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="receiver_name" class="form-label">Receiver Name</label>
+                            <input type="text" class="form-control" id="receiver_name" name="receiver_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="receiver_email" class="form-label">Receiver Email</label>
+                            <input type="email" class="form-control" id="receiver_email" name="receiver_email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="receiver_phone" class="form-label">Receiver Phone</label>
+                            <input type="tel" class="form-control" id="receiver_phone" name="receiver_phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="receiver_company" class="form-label">Receiver Company (Optional)</label>
+                            <input type="text" class="form-control" id="receiver_company" name="receiver_company">
+                        </div>
+                    </div>
+
+                    <!-- Shipment Details -->
+                    <div class="section-title mb-3 mt-4">
+                        <h4>Shipment Details</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="origin" class="form-label">Origin</label>
+                            <input type="text" class="form-control" id="origin" name="origin" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="destination" class="form-label">Destination</label>
+                            <input type="text" class="form-control" id="destination" name="destination" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" step="0.01" class="form-control" id="weight" name="weight">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="dimensions" class="form-label">Dimensions (L x W x H cm)</label>
+                            <input type="text" class="form-control" id="dimensions" name="dimensions" placeholder="30 x 20 x 10">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="package_type" class="form-label">Package Type</label>
+                            <select class="form-select" id="package_type" name="package_type">
+                                <option value="box">Box</option>
+                                <option value="envelope">Envelope</option>
+                                <option value="pallet">Pallet</option>
+                                <option value="tube">Tube</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Service Options -->
+                    <div class="section-title mb-3 mt-4">
+                        <h4>Service Options</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="service_level" class="form-label">Service Level</label>
+                            <select class="form-select" id="service_level" name="service_level">
+                                <option value="standard">Standard</option>
+                                <option value="express">Express</option>
+                                <option value="priority">Priority</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="estimated_delivery" class="form-label">Estimated Delivery Date</label>
+                            <input type="date" class="form-control" id="estimated_delivery" name="estimated_delivery">
+                        </div>
+                    </div>
+
+                    <!-- Special Instructions -->
+                    <div class="section-title mb-3 mt-4">
+                        <h4>Additional Information</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="special_instructions" class="form-label">Special Instructions</label>
+                            <textarea class="form-control" id="special_instructions" name="special_instructions" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Create Shipment</button>
+                        <a href="{{ url_for('admin') }}" class="btn btn-secondary ms-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

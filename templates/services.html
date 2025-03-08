@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Services - {{ settings.site_name|default('ShipEx') }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+    {% include 'partials/header.html' %}
+
+    <main class="services-page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Our Services</h1>
+                <p class="subtitle">Comprehensive shipping solutions for all your needs</p>
+            </div>
+        </section>
+
+        <section class="services-grid">
+            <div class="container">
+                {% if contents.services_page and contents.services_page.content %}
+                    {% for service in contents.services_page.content %}
+                        <div class="service-card">
+                            {% if service.icon_path %}
+                                <img src="{{ url_for('static', filename=service.icon_path) }}" alt="{{ service.title }}" class="service-icon">
+                            {% endif %}
+                            <h2>{{ service.title }}</h2>
+                            <p>{{ service.description }}</p>
+                            {% if service.features %}
+                                <ul class="service-features">
+                                    {% for feature in service.features %}
+                                        <li>{{ feature }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <a href="{{ service.link }}" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    {% include 'partials/footer.html' %}
+    {% include 'partials/livechat.html' %}
+{% endblock %} 

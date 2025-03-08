@@ -1,0 +1,10 @@
+bind = "0.0.0.0:10000"
+workers = 2
+timeout = 120
+preload_app = True
+worker_class = 'sync'
+max_requests = 1000
+max_requests_jitter = 50
+user = None  # Let Render handle the user
+group = None
+umask = 0o002  # Ensure created files are writable 

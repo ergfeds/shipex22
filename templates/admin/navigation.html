@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Navigation - ShipEx Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('admin') }}">ShipEx Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('manage_navigation') }}">Navigation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('manage_settings') }}">Settings</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title mb-4">Manage Navigation Menu</h1>
+                
+                <div class="alert alert-info mb-4">
+                    <h5><i class="bi bi-info-circle"></i> Navigation Tips:</h5>
+                    <ul class="mb-0">
+                        <li>Use full URLs (e.g., /services) for internal pages</li>
+                        <li>Use # links (e.g., #tracking) for section scrolling</li>
+                        <li>Order items by dragging and dropping</li>
+                        <li>Changes will appear immediately on the site</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="{{ url_for('manage_navigation') }}">
+                    <div id="nav-items">
+                        {% for i in range(10) %}
+                            <div class="nav-item-row mb-3 p-3 bg-light rounded {% if i >= nav_items|length %}d-none{% endif %}">
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label">Menu Title</label>
+                                        <input type="text" 
+                                               name="nav_title_{{ i }}" 
+                                               class="form-control"
+                                               value="{{ nav_items[i].title if i < nav_items|length else '' }}"
+                                               placeholder="e.g., Home">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">URL</label>
+                                        <input type="text" 
+                                               name="nav_url_{{ i }}" 
+                                               class="form-control"
+                                               value="{{ nav_items[i].url if i < nav_items|length else '' }}"
+                                               placeholder="e.g., /home">
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button type="button" class="btn btn-danger remove-nav-item">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="button" id="add-nav-item" class="btn btn-secondary">
+                            <i class="bi bi-plus-lg"></i> Add Menu Item
+                        </button>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" id="reset-default" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset to Default
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.getElementById('nav-items');
+            const addButton = document.getElementById('add-nav-item');
+            const resetButton = document.getElementById('reset-default');
+            
+            // Make nav items sortable
+            new Sortable(navItems, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost'
+            });
+            
+            // Add new navigation item
+            addButton.addEventListener('click', function() {
+                const hiddenItems = navItems.querySelectorAll('.nav-item-row.d-none');
+                if (hiddenItems.length > 0) {
+                    hiddenItems[0].classList.remove('d-none');
+                }
+            });
+
+            // Remove navigation item
+            navItems.addEventListener('click', function(e) {
+                if (e.target.closest('.remove-nav-item')) {
+                    const row = e.target.closest('.nav-item-row');
+                    const inputs = row.querySelectorAll('input');
+                    inputs.forEach(input => input.value = '');
+                    row.classList.add('d-none');
+                }
+            });
+
+            // Reset to default navigation
+            resetButton.addEventListener('click', function() {
+                const defaultNav = [
+                    {title: 'Home', url: '/'},
+                    {title: 'Services', url: '/services'},
+                    {title: 'Track', url: '#tracking'},
+                    {title: 'About', url: '/about'},
+                    {title: 'Contact', url: '/contact'}
+                ];
+
+                const rows = navItems.querySelectorAll('.nav-item-row');
+                rows.forEach((row, index) => {
+                    if (index < defaultNav.length) {
+                        row.classList.remove('d-none');
+                        const titleInput = row.querySelector(`input[name="nav_title_${index}"]`);
+                        const urlInput = row.querySelector(`input[name="nav_url_${index}"]`);
+                        titleInput.value = defaultNav[index].title;
+                        urlInput.value = defaultNav[index].url;
+                    } else {
+                        row.classList.add('d-none');
+                        const inputs = row.querySelectorAll('input');
+                        inputs.forEach(input => input.value = '');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Add Sortable.js for drag-and-drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+</body>
+</html> 

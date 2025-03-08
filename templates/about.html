@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>About Us - {{ settings.site_name|default('ShipEx') }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+    {% include 'partials/header.html' %}
+
+    <main class="about-page">
+        <section class="page-header">
+            <div class="container">
+                <h1>About Us</h1>
+                <p class="subtitle">Your Trusted Shipping Partner</p>
+            </div>
+        </section>
+
+        <section class="about-content">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h2>{{ contents.about_page.title if contents.about_page else 'Our Story' }}</h2>
+                        <div class="about-description">
+                            {% if contents.about_page and contents.about_page.content %}
+                                {{ contents.about_page.content.main_text }}
+                            {% else %}
+                                <p>ShipEx has been a leader in global shipping and logistics for over two decades. We combine cutting-edge technology with extensive industry experience to provide reliable, efficient, and cost-effective shipping solutions for businesses and individuals worldwide.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        {% if contents.about_page and contents.about_page.image_path %}
+                            <img src="{{ url_for('static', filename=contents.about_page.image_path) }}" alt="About Us">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="values-section">
+            <div class="container">
+                <h2>Our Values</h2>
+                <div class="values-grid">
+                    {% if contents.about_page and contents.about_page.content and contents.about_page.content.get('values') %}
+                        {% for value in contents.about_page.content.get('values') %}
+                            <div class="value-card">
+                                <i class="fas {{ value.icon }}"></i>
+                                <h3>{{ value.title }}</h3>
+                                <p>{{ value.description }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="value-card">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Reliability</h3>
+                            <p>We deliver on our promises, ensuring your shipments arrive safely and on time.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Innovation</h3>
+                            <p>Continuously improving our services through technology and creative solutions.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-leaf"></i>
+                            <h3>Sustainability</h3>
+                            <p>Committed to environmentally responsible shipping practices.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-heart"></i>
+                            <h3>Customer Focus</h3>
+                            <p>Your satisfaction is our top priority in everything we do.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'partials/footer.html' %}
+{% endblock %} 

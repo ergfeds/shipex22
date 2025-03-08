@@ -1,0 +1,697 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>{{ settings.site_name|default('ShipEx') }} - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tracking.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+    {% include 'partials/header.html' %}
+
+    <main>
+        <section class="hero" {% if contents.hero.image_path %}style="background-image: url('{{ url_for('static', filename=contents.hero.image_path) }}');"{% endif %}>
+            <div class="hero-content">
+                {% if contents.hero %}
+                    <h2>{{ contents.hero.title }}</h2>
+                    <p class="hero-subtitle">{{ contents.hero.subtitle }}</p>
+                {% else %}
+                    <h2>Welcome to ShipEx</h2>
+                    <p class="hero-subtitle">Your trusted shipping partner</p>
+                {% endif %}
+                <div class="action-buttons">
+                    <a href="#" class="action-btn">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                <path d="M7 8h10"></path>
+                                <path d="M7 12h10"></path>
+                                <path d="M7 16h10"></path>
+                            </svg>
+                        </div>
+                        <span>Rate & Transit Times</span>
+                    </a>
+                    <a href="#" class="action-btn active">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <span>Track</span>
+                    </a>
+                    <a href="#" class="action-btn">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <span>Ship</span>
+                    </a>
+                </div>
+                <form id="trackingForm" class="tracking-form">
+                    <input 
+                        type="text" 
+                        placeholder="Enter your tracking number" 
+                        class="tracking-input" 
+                        name="tracking_number" 
+                        required
+                    >
+                    <button type="submit" class="track-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Track Shipment
+                    </button>
+                </form>
+                <div id="trackingResult" class="tracking-result"></div>
+            </div>
+        </section>
+
+        <section class="service-features">
+            {% if contents.services %}
+                <div class="section-header">
+                    <h2>{{ contents.services.title }}</h2>
+                    <p class="section-subtitle">{{ contents.services.subtitle }}</p>
+                </div>
+                
+                <div class="features-grid">
+                    {% for service in contents.services.content %}
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <div class="feature-card-title">
+                                    <h3>{{ service.title }}</h3>
+                                </div>
+                            </div>
+                            <div class="feature-card-content">
+                                <p class="feature-card-description">{{ service.description }}</p>
+                                <ul class="feature-list">
+                                    {% for feature in service.features %}
+                                    <li>{{ feature }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="how-it-works">
+            <div class="section-header">
+                <h2>{{ contents.how_it_works.title }}</h2>
+                <p class="section-subtitle">{{ contents.how_it_works.subtitle }}</p>
+            </div>
+            
+            <div class="steps-container">
+                {% for step in contents.how_it_works.content %}
+                <div class="step-card">
+                    <div class="step-number">{{ step.step }}</div>
+                    <div class="step-content">
+                        <h3>{{ step.title }}</h3>
+                        <p>{{ step.description }}</p>
+                    </div>
+                </div>
+                {% if not loop.last %}
+                <div class="step-connector"></div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="statistics">
+            {% if contents.statistics %}
+                <div class="stats-container">
+                    {% for stat in contents.statistics.content %}
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                {% if stat.icon_path %}
+                                    <img src="{{ url_for('static', filename=stat.icon_path) }}" 
+                                         alt="{{ stat.label }}">
+                                {% endif %}
+                            </div>
+                            <div class="stat-number">{{ stat.number }}</div>
+                            <div class="stat-label">{{ stat.label }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="testimonials">
+            <h2>{{ contents.testimonials.title }}</h2>
+            <div class="testimonials-grid">
+                {% for testimonial in contents.testimonials.content %}
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <img src="{{ url_for('static', filename=testimonial.image_path) }}" 
+                             alt="Customer Avatar">
+                    </div>
+                    <p class="testimonial-text">{{ testimonial.text }}</p>
+                    <p class="testimonial-author">- {{ testimonial.author }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="why-choose-us">
+            {% if contents.why_choose_us %}
+                <h2>{{ contents.why_choose_us.title }}</h2>
+                <div class="benefits-grid">
+                    {% for benefit in contents.why_choose_us.content %}
+                        <div class="benefit-card">
+                            {% if benefit.icon_path %}
+                                <div class="benefit-icon-container">
+                                    <img src="{{ url_for('static', filename=benefit.icon_path) }}" 
+                                         alt="{{ benefit.title }}"
+                                         class="benefit-icon">
+                                </div>
+                            {% endif %}
+                            <h3>{{ benefit.title }}</h3>
+                            <p>{{ benefit.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="app-download">
+            <div class="app-content">
+                <div class="app-text">
+                    {% if contents.app_download %}
+                        <h2>{{ contents.app_download.title }}</h2>
+                        <p>{{ contents.app_download.subtitle }}</p>
+                        <div class="app-features">
+                            {% for feature in contents.app_download.content.features %}
+                                <div class="app-feature">
+                                    <span class="feature-icon">✓</span>
+                                    <span>{{ feature }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="coming-soon-badge">
+                            Coming Soon
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        function getStatusIcon(status) {
+            const icons = {
+                'Order Registered': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="12" y1="18" x2="12" y2="12"/>
+                        <line x1="9" y1="15" x2="15" y2="15"/>
+                    </svg>
+                `,
+                'Package Picked Up': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                        <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                `,
+                'In Transit': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                `,
+                'Customs Clearance': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                `,
+                'Out for Delivery': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                `,
+                'Delivered': `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                `
+            };
+            return icons[status] || '';
+        }
+
+        function getStatusDescription(status) {
+            const descriptions = {
+                'Order Registered': 'Your shipment has been registered in our system',
+                'Package Picked Up': 'Package has been collected from the sender',
+                'In Transit': 'Your package is on its way to the destination',
+                'Customs Clearance': 'Package is being processed at customs',
+                'Out for Delivery': 'Package is out for final delivery to recipient',
+                'Delivered': 'Package has been successfully delivered'
+            };
+            return descriptions[status] || '';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Not available';
+            return new Date(dateString).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        document.getElementById('trackingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const trackingNumber = form.tracking_number.value.trim();
+            
+            if (!trackingNumber) {
+                // Show error if tracking number is empty
+                form.tracking_number.classList.add('error');
+                return;
+            }
+            
+            form.tracking_number.classList.remove('error');
+            const resultDiv = document.getElementById('trackingResult');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div class="loading-animation">
+                    <div class="loading-spinner"></div>
+                    <h3>Tracking Your Shipment</h3>
+                    <p>Looking up shipment #${trackingNumber}</p>
+                </div>
+            `;
+            
+            // Smoothly scroll to the results
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            try {
+                const response = await fetch('/track', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `tracking_number=${encodeURIComponent(trackingNumber)}`
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.found) {
+                    const shipment = data.shipment;
+                    const statusOrder = [
+                        'Order Registered',
+                        'Package Picked Up',
+                        'In Transit',
+                        'Customs Clearance',
+                        'Out for Delivery',
+                        'Delivered'
+                    ];
+                    
+                    // Find current status index
+                    const currentStatusIndex = statusOrder.indexOf(shipment.status);
+                    const progressPercentage = ((currentStatusIndex + 1) / statusOrder.length) * 100;
+
+                    // Prepare status updates for display
+                    const statusUpdates = shipment.status_updates || [];
+                    const statusUpdatesMap = {};
+                    
+                    // Create a map of status updates by status
+                    statusUpdates.forEach(update => {
+                        statusUpdatesMap[update.status] = update;
+                    });
+
+                    resultDiv.innerHTML = `
+                        <div class="result-card">
+                            <div class="result-header">
+                                <div class="header-content">
+                                    <h3>Shipment Information</h3>
+                                    <div class="tracking-number-container">
+                                        <span class="label">Tracking Number:</span>
+                                        <span class="tracking-number">${shipment.tracking_number}</span>
+                                    </div>
+                                    <div class="status-badge-container">
+                                        <span class="status-badge ${shipment.status.toLowerCase().replace(/\s+/g, '-')}">
+                                            <i class="bi ${getStatusIcon(shipment.status)}"></i>
+                                            ${shipment.status}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="header-actions">
+                                    <button class="action-btn share-btn" onclick="shareTracking('${shipment.tracking_number}')">
+                                        <i class="bi bi-share"></i>
+                                        Share
+                                    </button>
+                                    <button class="action-btn print-btn" onclick="printTrackingDetails()">
+                                        <i class="bi bi-printer"></i>
+                                        Print
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="barcode-section">
+                                <svg id="barcode"></svg>
+                            </div>
+
+                            <div class="shipment-progress-card">
+                                <div class="route-info">
+                                    <div class="route-content">
+                                        <div class="route-point origin">
+                                            <div class="route-point-marker completed"></div>
+                                            <div class="route-point-details">
+                                                <label>Origin</label>
+                                                <div class="city">${shipment.origin}</div>
+                                                <div class="date">${formatDate(shipment.created_at)}</div>
+                                            </div>
+                                        </div>
+                                        <div class="route-line-container">
+                                            <div class="route-line">
+                                                <div class="route-progress" style="width: ${progressPercentage}%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="route-point destination">
+                                            <div class="route-point-marker ${progressPercentage === 100 ? 'completed' : 'pending'}"></div>
+                                            <div class="route-point-details">
+                                                <label>Destination</label>
+                                                <div class="city">${shipment.destination}</div>
+                                                <div class="date">${formatDate(shipment.estimated_delivery)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="status-timeline-container">
+                                <h4>Shipment Status Timeline</h4>
+                                <div class="status-timeline">
+                                    ${statusOrder.map((status, index) => {
+                                        const update = statusUpdatesMap[status] || {};
+                                        const isCompleted = index <= currentStatusIndex;
+                                        const isActive = status === shipment.status;
+                                        
+                                        return `
+                                            <div class="timeline-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}"
+                                                 data-status="${status.toLowerCase().replace(/\s+/g, '-')}">
+                                                <div class="timeline-connector ${index === 0 ? 'first' : ''}">
+                                                    <div class="connector-line ${isCompleted ? 'completed' : ''}"></div>
+                                                    <div class="timeline-dot ${isCompleted ? 'completed' : ''}">
+                                                        ${isCompleted ? '<i class="bi bi-check"></i>' : ''}
+                                                    </div>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h5>${status}</h5>
+                                                    <p>${getStatusDescription(status)}</p>
+                                                    ${isCompleted && update.timestamp ? `
+                                                        <div class="timeline-date">
+                                                            <i class="bi bi-calendar-check"></i> ${formatDate(update.timestamp || '')}
+                                                        </div>
+                                                        ${update.location ? `
+                                                            <div class="timeline-location">
+                                                                <i class="bi bi-geo-alt-fill"></i> ${update.location || ''}
+                                                            </div>
+                                                        ` : ''}
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <div class="shipment-details-container">
+                                <div class="shipment-details-row">
+                                    <div class="shipment-details-col">
+                                        <div class="details-card">
+                                            <h4><i class="bi bi-person-fill"></i> Sender Information</h4>
+                                            <div class="details-list">
+                                                <div class="details-item">
+                                                    <span class="details-label">Name:</span>
+                                                    <span class="details-value">${shipment.sender_name}</span>
+                                                </div>
+                                                ${shipment.sender_email ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Email:</span>
+                                                        <span class="details-value">${shipment.sender_email}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.sender_phone ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Phone:</span>
+                                                        <span class="details-value">${shipment.sender_phone}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.sender_company ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Company:</span>
+                                                        <span class="details-value">${shipment.sender_company}</span>
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="shipment-details-col">
+                                        <div class="details-card">
+                                            <h4><i class="bi bi-person-fill"></i> Receiver Information</h4>
+                                            <div class="details-list">
+                                                <div class="details-item">
+                                                    <span class="details-label">Name:</span>
+                                                    <span class="details-value">${shipment.receiver_name}</span>
+                                                </div>
+                                                ${shipment.receiver_email ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Email:</span>
+                                                        <span class="details-value">${shipment.receiver_email}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.receiver_phone ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Phone:</span>
+                                                        <span class="details-value">${shipment.receiver_phone}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.receiver_company ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Company:</span>
+                                                        <span class="details-value">${shipment.receiver_company}</span>
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="shipment-details-row">
+                                    <div class="shipment-details-col">
+                                        <div class="details-card">
+                                            <h4><i class="bi bi-box-seam"></i> Package Details</h4>
+                                            <div class="details-list">
+                                                ${shipment.weight ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Weight:</span>
+                                                        <span class="details-value">${shipment.weight} kg</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.dimensions ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Dimensions:</span>
+                                                        <span class="details-value">${shipment.dimensions}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.package_type ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Package Type:</span>
+                                                        <span class="details-value">${shipment.package_type}</span>
+                                                    </div>
+                                                ` : ''}
+                                                ${shipment.service_level ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Service Level:</span>
+                                                        <span class="details-value">${shipment.service_level}</span>
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="shipment-details-col">
+                                        <div class="details-card">
+                                            <h4><i class="bi bi-info-circle"></i> Additional Information</h4>
+                                            <div class="details-list">
+                                                <div class="details-item">
+                                                    <span class="details-label">Created:</span>
+                                                    <span class="details-value">${formatDate(shipment.created_at)}</span>
+                                                </div>
+                                                <div class="details-item">
+                                                    <span class="details-label">Est. Delivery:</span>
+                                                    <span class="details-value">${formatDate(shipment.estimated_delivery)}</span>
+                                                </div>
+                                                ${shipment.special_instructions ? `
+                                                    <div class="details-item">
+                                                        <span class="details-label">Special Instructions:</span>
+                                                        <span class="details-value">${shipment.special_instructions}</span>
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Generate barcode
+                    JsBarcode("#barcode", shipment.tracking_number, {
+                        format: "CODE128",
+                        lineColor: "#000",
+                        width: 1.5,
+                        height: 60,
+                        displayValue: true,
+                        fontSize: 14,
+                        margin: 10,
+                        background: '#f8f9fa'
+                    });
+                    
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error-message">
+                            <div class="error-icon">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                            </div>
+                            <h3>Shipment Not Found</h3>
+                            <p>${data.error || `No shipment found with tracking number: ${trackingNumber}`}</p>
+                            <p class="error-help">Please check the tracking number and try again, or contact customer support for assistance.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="error-message">
+                        <div class="error-icon">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                        <h3>Error Tracking Shipment</h3>
+                        <p>We encountered a problem while retrieving your shipment details.</p>
+                        <p class="error-help">Please try again later or contact customer support if the problem persists.</p>
+                    </div>
+                `;
+            }
+        });
+
+        // Helper function for status icons
+        function getStatusIcon(status) {
+            switch(status.toLowerCase().replace(/\s+/g, '-')) {
+                case 'order-registered':
+                    return 'bi-clipboard-check';
+                case 'package-picked-up':
+                    return 'bi-box-seam-fill';
+                case 'in-transit':
+                    return 'bi-truck';
+                case 'customs-clearance':
+                    return 'bi-building';
+                case 'out-for-delivery':
+                    return 'bi-geo-alt-fill';
+                case 'delivered':
+                    return 'bi-check-circle-fill';
+                default:
+                    return 'bi-info-circle';
+            }
+        }
+
+        function getStatusDescription(status) {
+            switch(status) {
+                case 'Order Registered':
+                    return 'Your shipment has been registered in our system and is awaiting pickup.';
+                case 'Package Picked Up':
+                    return 'Your package has been collected and is being processed for shipping.';
+                case 'In Transit':
+                    return 'Your shipment is currently in transit to its destination.';
+                case 'Customs Clearance':
+                    return 'Your package is being processed through customs before continuing its journey.';
+                case 'Out for Delivery':
+                    return 'Your package is out for final delivery to the recipient today.';
+                case 'Delivered':
+                    return 'Your package has been successfully delivered to its destination.';
+                default:
+                    return 'Status information is currently unavailable.';
+            }
+        }
+
+        // Share tracking function
+        function shareTracking(trackingNumber) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ShipEx Tracking',
+                    text: `Track shipment with tracking number: ${trackingNumber}`,
+                    url: window.location.href
+                })
+                .catch(error => console.log('Error sharing:', error));
+            } else {
+                // Fallback for browsers that don't support the Web Share API
+                const shareUrl = `${window.location.origin}/?tracking=${trackingNumber}`;
+                const tempInput = document.createElement("input");
+                document.body.appendChild(tempInput);
+                tempInput.value = shareUrl;
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+                
+                // Show notification
+                const notification = document.createElement("div");
+                notification.className = "share-notification";
+                notification.innerHTML = `
+                    <i class="bi bi-clipboard-check"></i>
+                    Tracking link copied to clipboard!
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.add("fade-out");
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+            }
+        }
+
+        // Print tracking details
+        function printTrackingDetails() {
+            window.print();
+        }
+
+        // Check if there's a tracking number in the URL (shared link)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trackingNumber = urlParams.get('tracking');
+            
+            if (trackingNumber) {
+                const trackingForm = document.getElementById('trackingForm');
+                trackingForm.tracking_number.value = trackingNumber;
+                trackingForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+{% endblock %}

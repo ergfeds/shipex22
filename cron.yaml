@@ -1,0 +1,4 @@
+jobs:
+  - name: keep-alive
+    command: curl -f https://shipex-tracking.onrender.com/health  # IMPORTANT: Replace with your actual Render URL!
+    schedule: "*/5 * * * *"  # Run every 5 minutes 

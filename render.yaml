@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: shipex-tracking
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.16
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: UPLOAD_FOLDER
+        value: /opt/render/project/src/static/uploads
+      - key: RENDER
+        value: true
+      - key: APP_URL
+        value: https://shipex-tracking.onrender.com  # IMPORTANT: Replace with your actual Render URL!
+    disk:
+      name: data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+  
+  - type: cron
+    name: keep-alive-cron
+    env: python
+    schedule: "*/5 * * * *"  # Run every 5 minutes
+    buildCommand: echo "No build needed for cron job"
+    startCommand: curl -f $APP_URL/health  # Uses the APP_URL from the web service
+    envVars:
+      - key: APP_URL
+        fromService:
+          name: shipex-tracking
+          type: web
+          envVarKey: APP_URL 

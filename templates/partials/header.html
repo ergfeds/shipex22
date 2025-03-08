@@ -1,0 +1,95 @@
+<header>
+    <nav>
+        <div class="nav-container">
+            <div class="logo-container">
+                {% if settings.site_logo %}
+                    <img src="{{ url_for('static', filename=settings.site_logo) }}" alt="{{ settings.site_name }}" class="site-logo">
+                {% endif %}
+                <h1 class="site-title">{{ settings.site_name|default('ShipEx') }}</h1>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-menu" id="mobile-nav">
+                {% if settings and settings.navigation %}
+                    {% for item in settings.navigation|from_json %}
+                        <a href="{{ url_for('home') if item.url == '/' else item.url }}" 
+                           {% if request.path == item.url %}class="active"{% endif %}>
+                            {% if item.url == '/' %}
+                                <i class="fas fa-home"></i>
+                            {% elif item.url == '/services' %}
+                                <i class="fas fa-truck-fast"></i>
+                            {% elif item.url == '/about' %}
+                                <i class="fas fa-info-circle"></i>
+                            {% elif item.url == '/contact' %}
+                                <i class="fas fa-envelope"></i>
+                            {% else %}
+                                <i class="fas fa-link"></i>
+                            {% endif %}
+                            <span>{{ item.title }}</span>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('home') }}" {% if request.path == '/' %}class="active"{% endif %}>
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="{{ url_for('services') }}" {% if request.path == '/services' %}class="active"{% endif %}>
+                        <i class="fas fa-truck-fast"></i>
+                        <span>Services</span>
+                    </a>
+                    <a href="{{ url_for('about') }}" {% if request.path == '/about' %}class="active"{% endif %}>
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                    <a href="{{ url_for('contact') }}" {% if request.path == '/contact' %}class="active"{% endif %}>
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+
+<head>
+    <!-- Add this meta tag in your head section -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    
+    menuBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        mobileNav.classList.toggle('active');
+        
+        // Toggle icon
+        const icon = this.querySelector('i');
+        if (this.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-container')) {
+            menuBtn.classList.remove('active');
+            mobileNav.classList.remove('active');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+});
+</script> 
